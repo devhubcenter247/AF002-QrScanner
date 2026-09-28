@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "31911324838",
+    "project_id": "alf-002-qr-scan",
+    "storage_bucket": "alf-002-qr-scan.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31911324838:android:0f36fc9722f8a529205867",
+        "android_client_info": {
+          "package_name": "com.azg.alf_002_qrscan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIB_0M1wQtJUQVR8inEFbR9dJfp4mz7BM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

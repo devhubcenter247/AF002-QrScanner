@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1053749054631",
+    "project_id": "alf02-qrscan",
+    "storage_bucket": "alf02-qrscan.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053749054631:android:4a3a2430993007b8891f82",
+        "android_client_info": {
+          "package_name": "com.qr.scanner.barcode.creator.edit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGRfQf6G8mJdra2RAdvMrsqcfFxoZ7w1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+

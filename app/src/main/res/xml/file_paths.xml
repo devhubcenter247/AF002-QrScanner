@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Internal app files: /data/data/<pkg>/files -->
+    <files-path name="files_root" path="." />
+    <files-path name="files_images" path="images/" />
+
+    <!-- Cache: /data/data/<pkg>/cache -->
+    <cache-path name="cache" path="." />
+    <cache-path name="captured" path="captured_images/" />
+
+    <!-- External cache & files (nếu cần) -->
+    <external-cache-path name="external_cache" path="." />
+    <external-files-path name="pictures" path="Pictures/" />
+</paths>

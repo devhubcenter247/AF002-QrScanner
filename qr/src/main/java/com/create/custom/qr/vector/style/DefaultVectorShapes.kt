@@ -1,0 +1,158 @@
+package com.create.custom.qr.vector.style
+
+import android.graphics.Path
+import android.graphics.RectF
+import androidx.annotation.FloatRange
+import androidx.core.graphics.*
+import com.create.custom.qr.style.Neighbors
+import kotlin.math.sqrt
+
+internal object DefaultVectorShape : QrVectorShapeModifier by RectVectorShape()
+internal class RectVectorShape(
+    @FloatRange(from = 0.0, to=1.0)
+    val size : Float = 1f
+) : QrVectorShapeModifier{
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+
+        val s = this@RectVectorShape.size.coerceIn(0f, 1f) * size
+
+        addRect((size - s)/2, (size - s)/2, (size + s)/2,(size + s)/2, Path.Direction.CW)
+    }
+}
+
+internal class CircleVectorShape(
+    @FloatRange(from = 0.0, to = 1.0) val size: Float
+) : QrVectorShapeModifier {
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        addCircle(size/2f, size/2f,
+            size/2 * this@CircleVectorShape.size.coerceIn(0f,1f), Path.Direction.CW)
+    }
+}
+
+internal class RoundCornersVectorShape(
+    @FloatRange(from = 0.0, to = 0.5)
+    val cornerRadius : Float,
+    val withNeighbors : Boolean,
+    val topLeft: Boolean = true,
+    val bottomLeft: Boolean = true,
+    val topRight: Boolean = true,
+    val bottomRight: Boolean = true,
+)  : QrVectorShapeModifier {
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        val corner = cornerRadius.coerceIn(0f, .5f) * size
+
+        addRoundRect(
+            RectF(0f, 0f, size, size),
+            floatArrayOf(
+                if (topLeft && (withNeighbors.not() || neighbors.top.not() && neighbors.left.not())) corner else 0f,
+                if (topLeft && (withNeighbors.not() || neighbors.top.not() && neighbors.left.not())) corner else 0f,
+                if (topRight && (withNeighbors.not() || neighbors.top.not() && neighbors.right.not())) corner else 0f,
+                if (topRight && (withNeighbors.not() || neighbors.top.not() && neighbors.right.not())) corner else 0f,
+                if (bottomRight && (withNeighbors.not() || neighbors.bottom.not() && neighbors.right.not())) corner else 0f,
+                if (bottomRight && (withNeighbors.not() || neighbors.bottom.not() && neighbors.right.not())) corner else 0f,
+                if (bottomLeft && (withNeighbors.not() || neighbors.bottom.not() && neighbors.left.not())) corner else 0f,
+                if (bottomLeft && (withNeighbors.not() || neighbors.bottom.not() && neighbors.left.not())) corner else 0f,
+            ),
+            Path.Direction.CW
+        )
+    }
+}
+
+internal class RoundCornersVerticalVectorShape(
+    @FloatRange(from = 0.0, to = 1.0) val radius : Float
+) : QrVectorShapeModifier {
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        val padding = (size * (1 - radius.coerceIn(0f,1f)))
+
+        if (neighbors.top){
+            addRect(padding,0f, size-padding, size/2f, Path.Direction.CW)
+        } else {
+            addCircle(size/2, size/2, size/2f-padding, Path.Direction.CW)
+        }
+        if (neighbors.bottom){
+            addRect(padding,size/2f, size-padding, size, Path.Direction.CW)
+        } else {
+            addCircle(size/2, size/2, size/2f-padding, Path.Direction.CW)
+        }
+    }
+}
+
+internal class RoundCornersHorizontalVectorShape(
+    @FloatRange(from = 0.0, to = 1.0) val radius : Float
+) : QrVectorShapeModifier {
+
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        val padding = (size * (1 - radius.coerceIn(0f,1f)))
+
+        if (neighbors.left){
+            addRect(0f,padding, size/2, size-padding, Path.Direction.CW)
+        } else {
+            addCircle(size/2, size/2, size/2f-padding, Path.Direction.CW)
+        }
+        if (neighbors.right){
+            addRect(size/2,padding, size, size-padding, Path.Direction.CW)
+        } else {
+            addCircle(size/2, size/2, size/2f-padding, Path.Direction.CW)
+        }
+    }
+}
+
+internal object StarVectorShape : QrVectorShapeModifier {
+
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        addRect(0f, 0f, size, size, Path.Direction.CW)
+        op(Path().apply {
+            repeat(4) {
+                addCircle(size, size, size / 2, Path.Direction.CW)
+                transform(rotationMatrix(90f, size / 2, size / 2))
+            }
+        }, Path.Op.DIFFERENCE)
+    }
+}
+
+internal object HeartVectorShape : QrVectorShapeModifier {
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        val s = size
+        // Start at top-center divot
+        moveTo(s * 0.5f, s * 0.25f)
+        // Right hump — smooth arc to right outer edge (C1 continuous at peak)
+        cubicTo(s * 0.55f, s * 0.12f, s * 0.95f, s * 0.12f, s * 0.95f, s * 0.35f)
+        // Right body down to bottom tip
+        cubicTo(s * 0.95f, s * 0.58f, s * 0.70f, s * 0.70f, s * 0.50f, s * 0.90f)
+        // Left body up from bottom tip
+        cubicTo(s * 0.30f, s * 0.70f, s * 0.05f, s * 0.58f, s * 0.05f, s * 0.35f)
+        // Left hump — smooth arc back to top-center divot (C1 continuous at peak)
+        cubicTo(s * 0.05f, s * 0.12f, s * 0.45f, s * 0.12f, s * 0.50f, s * 0.25f)
+        close()
+    }
+}
+
+internal class RhombusVectorShape(
+    @FloatRange(from = 0.0, to = 1.0) private val scale : Float
+) : QrVectorShapeModifier {
+
+    override fun Path.shape(size: Float, neighbors: Neighbors) {
+        addRect(0f, 0f, size, size, Path.Direction.CW)
+
+        val s = 1 / sqrt(2f)
+        transform(
+            scaleMatrix(
+                sx = s,
+                sy = s
+            )
+        )
+        transform(
+            translationMatrix(
+                size * (1 - s) / 2,
+                size * (1 - s) / 2
+            )
+        )
+        transform(
+            scaleMatrix(
+                sx = scale.coerceIn(0f, 1f),
+                sy = scale.coerceIn(0f, 1f)
+            )
+        )
+        transform(rotationMatrix(45f, size / 2f, size / 2f))
+    }
+}

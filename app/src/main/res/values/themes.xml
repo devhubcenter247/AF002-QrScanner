@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.Theme.AppTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+
+    <style name="Theme.AppTheme" parent="Base.Theme.AppTheme" />
+</resources>
